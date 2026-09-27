@@ -4,13 +4,13 @@ A TypeScript package for personal, offline-first apps: SQLite stores working dat
 
 ## Install
 
-After the public GitHub release is published:
+Install the pinned GitHub release:
 
 ```sh
 npm install github:hamadawan/google-drive-sync#v0.1.0
 ```
 
-For the prepared release before publishing, install `hamadawan-google-drive-sync-0.1.0.tgz`. Both apps currently include that exact archive under `vendor/` and use a `file:` dependency. This archive contains compiled JavaScript and TypeScript declarations; consumers do not need a TypeScript build step. The repository also commits `dist/` for GitHub installs.
+You can also install `hamadawan-google-drive-sync-0.1.0.tgz` from the [GitHub release](https://github.com/hamadawan/google-drive-sync/releases/tag/v0.1.0). The archive contains compiled JavaScript and TypeScript declarations; consumers do not need a TypeScript build step. The repository also commits `dist/` for GitHub installs.
 
 ## Database and schema
 
@@ -119,4 +119,4 @@ npm test
 npm pack
 ```
 
-See [RELEASING.md](RELEASING.md) for the initial GitHub publication and changing the two consumers to the release tag. CI builds, runs the SQLite/transport/client tests, checks committed output is current, and produces an installable tarball. No publish happens automatically.
+See [RELEASING.md](RELEASING.md) for publishing versioned GitHub releases and updating consumers. CI builds, runs the SQLite/transport/client tests, checks committed output is current, and produces an installable tarball. No publish happens automatically.
