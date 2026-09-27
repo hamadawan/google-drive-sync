@@ -1,0 +1,47 @@
+{
+  "name": "@hamadawan/google-drive-sync",
+  "version": "0.1.0",
+  "description": "Local-first SQLite synchronization through Google Drive appDataFolder",
+  "license": "MIT",
+  "author": "Hamad Awan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamadawan/google-drive-sync.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./web-auth": {
+      "types": "./dist/web-auth.d.ts",
+      "default": "./dist/web-auth.js"
+    },
+    "./native-auth": {
+      "types": "./dist/native-auth.d.ts",
+      "default": "./dist/native-auth.js"
+    },
+    "./web/drive-auth.html": "./web/drive-auth.html"
+  },
+  "files": [
+    "dist",
+    "web",
+    "README.md",
+    "LICENSE",
+    "RELEASING.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.cjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

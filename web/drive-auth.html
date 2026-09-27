@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Connect Google Drive</title>
+  <style>
+    body { font: 16px/1.6 system-ui, sans-serif; background: #f5f9f8; color: #173c39; margin: 0; padding: 40px 24px; }
+    main { max-width: 380px; margin: 0 auto; }
+    button { display: block; width: 100%; border-radius: 12px; padding: 14px; margin: 16px 0; font: inherit; cursor: pointer; }
+    #connect { background: white; color: #1f1f1f; border: 1px solid #747775; }
+    #cancel { background: transparent; border: 0; color: #315f59; }
+    button:disabled { opacity: .5; cursor: wait; }
+  </style>
+</head>
+<body><main>
+  <h1>Connect your Google Drive</h1>
+  <p>Keep your app in sync on your phone and computer. Your data stays in your Google Drive.</p>
+  <button id="connect" disabled>Continue with Google</button>
+  <button id="cancel">Cancel</button>
+  <p id="status" role="status">Loading Google sign-in…</p>
+</main>
+<script>
+  (() => {
+    const params = new URLSearchParams(location.hash.slice(1));
+    history.replaceState(null, '', location.pathname);
+    const nonce = params.get('nonce');
+    const clientId = params.get('clientId');
+    const scope = 'https://www.googleapis.com/auth/drive.appdata';
+    const status = document.getElementById('status');
+    if (!/^[a-f0-9]{48}$/.test(nonce || '') || !/^[a-zA-Z0-9-]+\.apps\.googleusercontent\.com$/.test(clientId || '')) {
+      status.textContent = 'Open this page using Connect Google Drive in your app.';
+      return;
+    }
+    const channel = new BroadcastChannel('drive-sync-google-' + nonce);
+    const send = (message) => {
+      channel.postMessage({ ...message, nonce });
+      status.textContent = message.error ? 'Connection cancelled. You can close this window.' : 'Connected. Return to your app.';
+      document.getElementById('connect').disabled = true;
+      setTimeout(() => { channel.close(); window.close(); }, 500);
+    };
+    document.getElementById('cancel').onclick = () => send({ error: 'cancelled' });
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.onerror = () => { status.textContent = 'Could not load Google sign-in. Check your connection and try again.'; };
+    script.onload = () => {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: clientId, scope: 'openid email ' + scope,
+        callback: send, error_callback: () => send({ error: 'cancelled' }),
+      });
+      const button = document.getElementById('connect');
+      button.disabled = false;
+      status.textContent = 'Choose the same Google account on all your devices.';
+      button.onclick = () => client.requestAccessToken({ prompt: 'select_account' });
+    };
+    document.head.appendChild(script);
+  })();
+</script></body></html>
